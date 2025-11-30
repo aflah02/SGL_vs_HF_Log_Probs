@@ -33,7 +33,7 @@ def _compute_logliks_for_query(model, device, query: str, choices: list):
     If a choice cannot be evaluated (e.g., empty), returns a large negative number.
     """
     # prepare combined inputs: query + choice (no special tokens added)
-    # We intentionally avoid add_special_tokens=True so we get consistent token positions
+    # We intentionally avoid add_special_tokens=False so we get consistent token positions
 
     inputs = [query + " " + c for c in choices]  # adding a space to separate can help tokenization
     enc = tokenizer(inputs, return_tensors="pt", padding=True, truncation=False, add_special_tokens=False)
