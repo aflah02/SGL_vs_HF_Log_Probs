@@ -69,8 +69,13 @@ with open(save_file_name ,"w", encoding="utf-8") as fout:
         state = multiple_choice_eval.run(query=query, choices=choices)
         response = state.get_meta_info("multiple_choice_response")
         normalized_prompt_logprobs = response['normalized_prompt_logprobs']
+        input_token_logprobs = response['input_token_logprobs']
+        output_token_logprobs = response['output_token_logprobs']
         out_row = {'row_idx': row_idx}
+        # Returned Stuff Listed Here - https://github.com/sgl-project/sglang/blob/c15c864b6f2a5030e50b6a09b9b99b9783b95e99/python/sglang/lang/choices.py#L45
         out_row["choice_logliks"] = normalized_prompt_logprobs
+        out_row["input_token_logprobs"] = input_token_logprobs
+        out_row["output_token_logprobs"] = output_token_logprobs
         fout.write(json.dumps(out_row, ensure_ascii=False) + "\n")
 
 terminate_process(SERVER_PROCESS)

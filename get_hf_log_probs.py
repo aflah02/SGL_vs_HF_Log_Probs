@@ -59,6 +59,7 @@ def _compute_logliks_for_query(model, device, query: str, choices: list):
         log_probs = torch.nn.functional.log_softmax(shift_logits, dim=-1)  # (B, L-1, V)
 
         result_lls = []
+        result_token_wise = []
         for b in range(B):
             # actual unpadded length
             if attention_mask is None:
@@ -87,9 +88,18 @@ def _compute_logliks_for_query(model, device, query: str, choices: list):
             token_ids = shift_labels[b].index_select(0, label_positions)  # (num_choice_tokens,)
             token_logps = log_probs[b].index_select(0, label_positions).gather(1, token_ids.unsqueeze(-1)).squeeze(-1)
             # sum log probs
+            token_logps_list = token_logps.tolist()
             ll = float(token_logps.sum().item())
             result_lls.append(ll)
-    return result_lls
+
+            merge_token_ids_and_log_probs = []
+
+            for token_id, token_logps in zip(token_ids, token_logps_list):
+                token_id = token_id.item()
+                merge_token_ids_and_log_probs.append([token_id, tokenizer.decode(token_id), token_logps])
+
+            result_token_wise.append(merge_token_ids_and_log_probs)
+    return result_lls, result_token_wise
 
 os.makedirs("HF_Outputs/", exist_ok=True)
 
@@ -97,7 +107,8 @@ with open("HF_Outputs/hf_logprobs.jsonl" ,"w", encoding="utf-8") as fout:
     for row_idx, row in enumerate(ds):
         query = row.get('query')
         choices = row.get("choices")
-        all_lls = _compute_logliks_for_query(model, device, query, choices)
+        all_lls, result_token_wise = _compute_logliks_for_query(model, device, query, choices)
         out_row = {'row_idx': row_idx}
         out_row["choice_logliks"] = all_lls
+        out_row["result_token_wise"] = result_token_wise
         fout.write(json.dumps(out_row, ensure_ascii=False) + "\n")

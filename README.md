@@ -4,19 +4,7 @@ I noticed significant discrepancies and this is my attempt to create a clean rep
 
 Note: Before anyone points out that SGLang does not return log probabilities but normalized log probabilities, don't worry I've already taken that into account in my analysis by using the `Token Length Normalized` choices method which can be easily denormalized by scaling with number of tokens in the option.
 
-# HF Run - 
-
-## Env - 
-
-I used uv for my environment and to share my exact setup I ran `uv pip list > requirements.txt` and the output is present in `requirements.txt`
-
-## Run Command -
-
-CUDA_VISIBLE_DEVICES=0 python get_hf_log_probs.py
-
-# SGL Run - 
-
-## Env -
+# Env - 
 
 Exact Image as sglang:latest points to different images over time - https://hub.docker.com/layers/lmsysorg/sglang/latest/images/sha256-3bcc7b2db268fe8d965090f91b0dcd6663c5571b690df39ebb6131abad2a2ad8
 
@@ -25,17 +13,21 @@ Change mounts in the command below as necessary -
 ```
 docker run --gpus all -it \
     --shm-size 32g \
-    -v "Reproducible_Example_SGL_vs_HF":"Reproducible_Example_SGL_vs_HF" \
+    -v "/NS/ai-agents/work/afkhan/Preference_Enhanced_Training/Reproducible_Example_SGL_vs_HF":"/NS/ai-agents/work/afkhan/Preference_Enhanced_Training/Reproducible_Example_SGL_vs_HF" \
     -v "/NS/llm-artifacts/nobackup/HF_HOME":"/NS/llm-artifacts/nobackup/HF_HOME" \
     --ipc=host \
+    --env "HF_TOKEN=TOKEN" \
     lmsysorg/sglang:latest \
     bash
 ```
 
+# HF Run - 
 
-## Run Command -
+`CUDA_VISIBLE_DEVICES=0 python get_hf_log_probs.py`
 
-bash run_sgl_configs.sh
+# SGL Run - 
+
+`bash run_sgl_configs.sh`
 
 Ran multiple attention backends with and without determinism
 

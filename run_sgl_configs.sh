@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Backends taken from https://docs.sglang.io/advanced_features/attention_backend.html#launch-command-for-different-attention-backends. Only these 3 backends support both deterministic inference
-ATTENTION_BACKENDS=("flashinfer" "fa3" "triton")
+ATTENTION_BACKENDS=("flashinfer" "fa3" "triton" "torch_native")
 
 for backend in "${ATTENTION_BACKENDS[@]}"; do
 
@@ -9,9 +8,13 @@ for backend in "${ATTENTION_BACKENDS[@]}"; do
     CUDA_VISIBLE_DEVICES=1 python get_sgl_log_probs.py \
         --attention_backend "$backend"
 
+    if [[ "$backend" == "torch_native" ]]; then
+        echo "Skipping deterministic inference for backend=$backend (not supported)"
+        continue
+    fi
+
     echo "Running backend=$backend WITH deterministic inference"
     CUDA_VISIBLE_DEVICES=1 python get_sgl_log_probs.py \
         --attention_backend "$backend" \
         --enable_deterministic_inference
-
 done
