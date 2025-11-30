@@ -44,9 +44,11 @@ Ran multiple attention backends with and without determinism
 ## OS / Kernel -
 
 Commmand - `uname -a`
+
 Output - `Linux sws-2h100-05 6.6.88.1.amd64-smp #1 SMP PREEMPT_DYNAMIC Mon Apr 28 14:29:46 CEST 2025 x86_64 GNU/Linux`
 
 Command - `lsb_release -a`
+
 Output - 
 ```
 No LSB modules are available.
@@ -59,6 +61,7 @@ Codename:       bookworm
 ## CPU Info -
 
 Command - `lscpu`
+
 Output - 
 ```
 Architecture:             x86_64
@@ -165,6 +168,7 @@ Sun Nov 30 14:15:01 2025
 ```
 
 Command - `cat /proc/driver/nvidia/version`
+
 Output -
 ```
 NVRM version: NVIDIA UNIX x86_64 Kernel Module  550.54.14  Thu Feb 22 01:44:30 UTC 2024
@@ -172,6 +176,7 @@ GCC version:  gcc version 12.2.0 (Debian 12.2.0-14+deb12u1)
 ```
 
 Command - `nvcc --version`
+
 Output - 
 ```
 nvcc: NVIDIA (R) Cuda compiler driver
@@ -180,5 +185,3 @@ Built on Wed_Sep_21_10:33:58_PDT_2022
 Cuda compilation tools, release 11.8, V11.8.89
 Build cuda_11.8.r11.8/compiler.31833905_0
 ```
-
-Command - 
